@@ -16,6 +16,12 @@
         android:theme="@style/Theme.Cajoludu"
         tools:targetApi="31">
         <activity
+            android:name=".BookView"
+            android:exported="false" />
+        <activity
+            android:name=".ListaBiblioteca"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
