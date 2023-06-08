@@ -19,7 +19,7 @@
             android:name=".BookView"
             android:exported="false" />
         <activity
-            android:name=".ListaBiblioteca"
+            android:name=".ListaBibliotecaActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

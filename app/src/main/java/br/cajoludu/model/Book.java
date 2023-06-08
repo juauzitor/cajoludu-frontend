@@ -4,10 +4,12 @@ public class Book {
     private String nome;
     private String image;
     private int curtidas;
+    private String sinopse;
 
-    public Book(String nome, int curtidas) {
+    public Book(String nome, int curtidas, String sinopse) {
         this.nome = nome;
         this.curtidas = curtidas;
+        this.sinopse = sinopse;
     }
 
     public String getNome() {
@@ -32,5 +34,13 @@ public class Book {
 
     public void setCurtidas(int curtidas) {
         this.curtidas = curtidas;
+    }
+
+    public String getSinopse() {
+        return sinopse;
+    }
+
+    public void setSinopse(String sinopse) {
+        this.sinopse = sinopse;
     }
 }
