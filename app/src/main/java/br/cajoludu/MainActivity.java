@@ -1,30 +1,63 @@
 package br.cajoludu;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
+import android.app.Activity;
 import android.os.Bundle;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+public class MainActivity extends Activity {
 
-public class MainActivity extends AppCompatActivity {
-
-    private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
+    private TableLayout tableLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        reference.child("Permissoes").setValue("all");
-        reference.child("Teste").setValue("VoMEMA");
+        tableLayout = findViewById(R.id.tableLayout); // Assuming you have a TableLayout with id "tableLayout"
 
-        Context context = MainActivity.this; // Replace YourActivity with your actual activity or context
-        String downloadUrl = "https://wiki.sj.ifsc.edu.br/images/7/7f/FTP-RES2014-1.pdf";
-        String fileName = "FTP-RES2014-1.pdf";
+        // Create a new TableRow
+        TableRow tableRow = new TableRow(this);
 
-        FileDownloader fileDownloader = new FileDownloader(context, downloadUrl, fileName);
-        //fileDownloader.startDownload();
+        // Create an ImageButton
+        ImageButton imageButton = new ImageButton(this);
+        // Set image resource for the ImageButton
+        imageButton.setImageResource(R.drawable.livro);
+
+        // Create a TextView
+        TextView textView = new TextView(this);
+        // Set text for the TextView
+        textView.setText("Text");
+
+        // Create layout parameters for the TableRow
+        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, // Width
+                ViewGroup.LayoutParams.WRAP_CONTENT // Height
+        );
+
+        // Set layout parameters for the TableRow
+        tableRow.setLayoutParams(rowParams);
+
+        // Create layout parameters for the ImageButton
+        TableRow.LayoutParams imageParams = new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, // Width
+                ViewGroup.LayoutParams.WRAP_CONTENT // Height
+        );
+
+        // Create layout parameters for the TextView
+        TableRow.LayoutParams textParams = new TableRow.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, // Width
+                ViewGroup.LayoutParams.WRAP_CONTENT // Height
+        );
+
+        // Add the ImageButton and TextView to the TableRow with their respective layout parameters
+        tableRow.addView(imageButton, imageParams);
+        tableRow.addView(textView, textParams);
+
+        // Add the TableRow to the TableLayout
+        tableLayout.addView(tableRow, rowParams);
     }
 }
