@@ -2,12 +2,16 @@ package br.cajoludu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.io.Serializable;
 
 import br.cajoludu.model.Book;
 
@@ -29,6 +33,13 @@ public class ListaBibliotecaActivity extends AppCompatActivity {
         ImageButton imageButton = new ImageButton(this);
         // Set image resource for the ImageButton
         imageButton.setImageResource(R.drawable.livro);
+        imageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                abrirBookView();
+            }
+        });
+
 
         // Create a TextView
         TextView textView = new TextView(this);
@@ -62,5 +73,12 @@ public class ListaBibliotecaActivity extends AppCompatActivity {
 
         // Add the TableRow to the TableLayout
         tableLayout.addView(tableRow, rowParams);
+    }
+
+    public void abrirBookView() {
+        Intent intent = new Intent(this, BookViewActivity.class);
+        intent.putExtra("livroTitulo", mlivro.getNome());
+        intent.putExtra("livroSinopse", mlivro.getSinopse());
+        startActivity(intent);
     }
 }

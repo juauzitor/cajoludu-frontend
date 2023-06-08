@@ -16,7 +16,7 @@
         android:theme="@style/Theme.Cajoludu"
         tools:targetApi="31">
         <activity
-            android:name=".BookView"
+            android:name=".BookViewActivity"
             android:exported="false" />
         <activity
             android:name=".ListaBibliotecaActivity"

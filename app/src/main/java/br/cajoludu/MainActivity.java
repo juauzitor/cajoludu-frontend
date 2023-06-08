@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TableLayout;
-import br.cajoludu.model.Book;
 
 public class MainActivity extends Activity {
 
