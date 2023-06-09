@@ -14,8 +14,8 @@ import br.cajoludu.model.Book;
 public class BookViewActivity extends AppCompatActivity {
     private Button downloadButton;
     private Context context;
-    private String downloadUrl = "https://wiki.sj.ifsc.edu.br/images/7/7f/FTP-RES2014-1.pdf";
-    private String fileName = "FTP-RES2014-1.pdf";
+    private String downloadUrl;
+    private String fileName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +24,12 @@ public class BookViewActivity extends AppCompatActivity {
 
         String tituloLivro = getIntent().getStringExtra("livroTitulo");
         String sinopseLivro = getIntent().getStringExtra("livroSinopse");
+        String urlLivro = getIntent().getStringExtra("livrourl");
         ImageView imageView = findViewById(R.id.capa);
         imageView.setImageResource(R.drawable.livro);
+
+        fileName = tituloLivro + ".pdf";
+        downloadUrl = urlLivro;
 
         TextView titulo = findViewById(R.id.textView7);
         titulo.setText(tituloLivro);

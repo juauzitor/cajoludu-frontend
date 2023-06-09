@@ -2,14 +2,16 @@ package br.cajoludu.model;
 
 public class Book {
     private String nome;
-    private String image;
+    private String imagem;
     private int curtidas;
     private String sinopse;
+    private String url;
 
-    public Book(String nome, int curtidas, String sinopse) {
+    public Book(String nome, int curtidas, String sinopse, String url) {
         this.nome = nome;
         this.curtidas = curtidas;
         this.sinopse = sinopse;
+        this.url = url;
     }
 
     public String getNome() {
@@ -21,11 +23,11 @@ public class Book {
     }
 
     public String getImage() {
-        return image;
+        return imagem;
     }
 
     public void setImage(String image) {
-        this.image = image;
+        this.imagem = image;
     }
 
     public int getCurtidas() {
@@ -43,4 +45,8 @@ public class Book {
     public void setSinopse(String sinopse) {
         this.sinopse = sinopse;
     }
+
+    public String getUrl() {return url;}
+
+    public void setUrl(String url) {this.url = url;}
 }
