@@ -1,112 +1,122 @@
 package br.cajoludu;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
-import java.io.Serializable;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 import br.cajoludu.model.Book;
 
 public class ListaBibliotecaActivity extends AppCompatActivity {
-    private DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
-    private TableLayout tableLayout;
-    DatabaseReference livros = reference.child("livros");
+
+    private RequestQueue mRequestQueue;
+    private ArrayList<Book> bookInfoArrayList;
+    private ProgressBar progressBar;
+    private EditText searchEdt;
+    private ImageButton searchBtn;
+    private String currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lista_biblioteca);
 
-        tableLayout = findViewById(R.id.tableLayout); // Assuming you have a TableLayout with id "tableLayout"
+        progressBar = findViewById(R.id.idLoadingPB);
+        searchEdt = findViewById(R.id.idEdtSearchBooks);
+        searchBtn = findViewById(R.id.idBtnSearch);
 
-        livros.addListenerForSingleValueEvent(new ValueEventListener() {
+        currentUser = getIntent().getStringExtra("user");
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()) {
-                    for (DataSnapshot livroSnapshot : snapshot.getChildren()) {
-                        // Recupera os dados do snapshot do livro
-                        String nome = livroSnapshot.child("nome").getValue(String.class);
-                        int curtidas = livroSnapshot.child("curtidas").getValue(int.class);
-                        String sinopse = livroSnapshot.child("sinopse").getValue(String.class);
-                        String url = livroSnapshot.child("url").getValue(String.class);
-
-                        // Cria um novo objeto Book para cada livro
-                        Book livro = new Book(nome, curtidas, sinopse, url);
-
-                        // Cria uma nova TableRow
-                        TableRow tableRow = new TableRow(ListaBibliotecaActivity.this);
-
-                        // Cria um novo ImageButton
-                        ImageButton imageButton = new ImageButton(ListaBibliotecaActivity.this);
-                        // Define o recurso de imagem para o ImageButton
-                        imageButton.setImageResource(R.drawable.livro);
-                        imageButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                abrirBookView(livro);
-                            }
-                        });
-
-                        // Cria um novo TextView
-                        TextView textView = new TextView(ListaBibliotecaActivity.this);
-                        // Define o texto para o TextView
-                        textView.setText(livro.getNome());
-
-                        // Define os parâmetros de layout para a TableRow
-                        TableRow.LayoutParams rowParams = new TableRow.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT, // Width
-                                ViewGroup.LayoutParams.WRAP_CONTENT // Height
-                        );
-
-                        // Define os parâmetros de layout para o ImageButton
-                        TableRow.LayoutParams imageParams = new TableRow.LayoutParams(
-                                ViewGroup.LayoutParams.WRAP_CONTENT, // Width
-                                ViewGroup.LayoutParams.WRAP_CONTENT // Height
-                        );
-
-                        // Define os parâmetros de layout para o TextView
-                        TableRow.LayoutParams textParams = new TableRow.LayoutParams(
-                                ViewGroup.LayoutParams.WRAP_CONTENT, // Width
-                                ViewGroup.LayoutParams.WRAP_CONTENT // Height
-                        );
-
-                        // Adiciona o ImageButton e o TextView à TableRow com seus respectivos parâmetros de layout
-                        tableRow.addView(imageButton, imageParams);
-                        tableRow.addView(textView, textParams);
-
-                        // Adiciona a TableRow ao TableLayout
-                        tableLayout.addView(tableRow, rowParams);
-                    }
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                if (searchEdt.getText().toString().isEmpty()) {
+                    searchEdt.setError("Please enter a search query");
+                    return;
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Trata o erro, se necessário
+                getBooksInfo(searchEdt.getText().toString());
             }
         });
     }
 
-    public void abrirBookView(Book livro) {
-        Intent intent = new Intent(this, BookViewActivity.class);
-        intent.putExtra("livroTitulo", livro.getNome());
-        intent.putExtra("livroSinopse", livro.getSinopse());
-        intent.putExtra("livrourl", livro.getUrl());
-        startActivity(intent);
+    private void getBooksInfo(String query) {
+        bookInfoArrayList = new ArrayList<>();
+        mRequestQueue = Volley.newRequestQueue(ListaBibliotecaActivity.this);
+        mRequestQueue.getCache().clear();
+        String url = "https://www.googleapis.com/books/v1/volumes?q=" + query;
+        RequestQueue queue = Volley.newRequestQueue(ListaBibliotecaActivity.this);
+
+        JsonObjectRequest booksObjrequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                progressBar.setVisibility(View.GONE);
+                try {
+                    JSONArray itemsArray = response.getJSONArray("items");
+
+                    for (int i = 0; i < itemsArray.length(); i++) {
+                        JSONObject itemsObj = itemsArray.getJSONObject(i);
+                        JSONObject volumeObj = itemsObj.getJSONObject("volumeInfo");
+                        String title = volumeObj.optString("title");
+                        String subtitle = volumeObj.optString("subtitle");
+                        JSONArray authorsArray = volumeObj.getJSONArray("authors");
+                        String publisher = volumeObj.optString("publisher");
+                        String publishedDate = volumeObj.optString("publishedDate");
+                        String description = volumeObj.optString("description");
+                        int pageCount = volumeObj.optInt("pageCount");
+                        JSONObject imageLinks = volumeObj.optJSONObject("imageLinks");
+                        String thumbnail = imageLinks.optString("thumbnail");
+                        String previewLink = volumeObj.optString("previewLink");
+                        String infoLink = volumeObj.optString("infoLink");
+                        JSONObject saleInfoObj = itemsObj.optJSONObject("saleInfo");
+                        String buyLink = saleInfoObj.optString("buyLink");
+                        ArrayList<String> authorsArrayList = new ArrayList<>();
+                        if (authorsArray.length() != 0) {
+                            for (int j = 0; j < authorsArray.length(); j++) {
+                                authorsArrayList.add(authorsArray.optString(i));
+                            }
+                        }
+                        Book bookInfo = new Book(title, subtitle, authorsArrayList, publisher, publishedDate, description, pageCount, thumbnail, previewLink, infoLink, buyLink);
+                        bookInfoArrayList.add(bookInfo);
+                    }
+
+                    BookAdapter adapter = new BookAdapter(bookInfoArrayList, ListaBibliotecaActivity.this);
+                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ListaBibliotecaActivity.this, RecyclerView.VERTICAL, false);
+                    RecyclerView mRecyclerView = findViewById(R.id.idRVBooks);
+                    mRecyclerView.setLayoutManager(linearLayoutManager);
+                    mRecyclerView.setAdapter(adapter);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(ListaBibliotecaActivity.this, "No Data Found" + e, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(ListaBibliotecaActivity.this, "Error found: " + error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        queue.add(booksObjrequest);
     }
 }

@@ -1,41 +1,72 @@
 package br.cajoludu.model;
 
+import java.util.ArrayList;
+
 public class Book {
-    private String nome;
-    private String imagem;
-    private int curtidas;
-    private String sinopse;
-    private String url;
+    private String titulo; // Title
+    private String subtitulo; // Subtitle
+    private ArrayList<String> autores; // Authors
+    private String publicadora; // Publisher
+    private String dataPublicacao; // Published Date
+    private String sinopse; // Description
+    private int contagemDePagina; //Page Count
+    private String imagem; // Thumbnail
+    private String previewLink; //PreviewLink
+    private String infoLink; // Info Link
+    private String buyLink; //  Buy link
 
-    public Book(String nome, int curtidas, String sinopse, String url) {
-        this.nome = nome;
-        this.curtidas = curtidas;
+    public Book(String titulo, String subtitulo, ArrayList<String> autores, String publicadora, String dataPublicacao, String sinopse, int contagemDePagina, String imagem, String previewLink, String infoLink, String buyLink) {
+        this.titulo = titulo;
+        this.subtitulo = subtitulo;
+        this.autores = autores;
+        this.publicadora = publicadora;
+        this.dataPublicacao = dataPublicacao;
         this.sinopse = sinopse;
-        this.url = url;
+        this.contagemDePagina = contagemDePagina;
+        this.imagem = imagem;
+        this.previewLink = previewLink;
+        this.infoLink = infoLink;
+        this.buyLink = buyLink;
     }
 
-    public String getNome() {
-        return nome;
+    public String getTitulo() {
+        return titulo;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
-    public String getImage() {
-        return imagem;
+    public String getSubtitulo() {
+        return subtitulo;
     }
 
-    public void setImage(String image) {
-        this.imagem = image;
+    public void setSubtitulo(String subtitulo) {
+        this.subtitulo = subtitulo;
     }
 
-    public int getCurtidas() {
-        return curtidas;
+    public ArrayList<String> getAutores() {
+        return autores;
     }
 
-    public void setCurtidas(int curtidas) {
-        this.curtidas = curtidas;
+    public void setAutores(ArrayList<String> autores) {
+        this.autores = autores;
+    }
+
+    public String getPublicadora() {
+        return publicadora;
+    }
+
+    public void setPublicadora(String publicadora) {
+        this.publicadora = publicadora;
+    }
+
+    public String getDataPublicacao() {
+        return dataPublicacao;
+    }
+
+    public void setDataPublicacao(String dataPublicacao) {
+        this.dataPublicacao = dataPublicacao;
     }
 
     public String getSinopse() {
@@ -46,7 +77,43 @@ public class Book {
         this.sinopse = sinopse;
     }
 
-    public String getUrl() {return url;}
+    public int getContagemDePagina() {
+        return contagemDePagina;
+    }
 
-    public void setUrl(String url) {this.url = url;}
+    public void setContagemDePagina(int contagemDePagina) {
+        this.contagemDePagina = contagemDePagina;
+    }
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+
+    public String getPreviewLink() {
+        return previewLink;
+    }
+
+    public void setPreviewLink(String previewLink) {
+        this.previewLink = previewLink;
+    }
+
+    public String getInfoLink() {
+        return infoLink;
+    }
+
+    public void setInfoLink(String infoLink) {
+        this.infoLink = infoLink;
+    }
+
+    public String getBuyLink() {
+        return buyLink;
+    }
+
+    public void setBuyLink(String buyLink) {
+        this.buyLink = buyLink;
+    }
 }
